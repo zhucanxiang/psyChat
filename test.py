@@ -8,6 +8,7 @@ class TestBaiduTranslate(unittest.TestCase):
         appkey = os.getenv("BAIDU_TRANSLATE_APPKEY")
         baidu_trans = BaiduTrans(appid, appkey)
         result = baidu_trans.translate("hello", "zh")
+        print(result)
         self.assertEqual(result, "你好")
 
 if __name__ == '__main__':

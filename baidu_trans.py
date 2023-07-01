@@ -5,6 +5,7 @@ import json
 import re
 import requests
 import hashlib
+import time
 from urllib.parse import urlencode
 
 
@@ -15,7 +16,7 @@ class BaiduTrans:
 
     def translate(self, text, to_language):
         base_url = "http://api.fanyi.baidu.com/api/trans/vip/translate"
-        salt = "199310"
+        salt = str(int(time.time()))
         sign_str = self.appid+text+salt+self.appkey
         sign = hashlib.md5(sign_str.encode(encoding="UTF-8")).hexdigest()
         base_url = "http://api.fanyi.baidu.com/api/trans/vip/translate"
