@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+  </head>
+  <body>
+    <form>
+      <label for="query">Query:</label><br>
+      <textarea id="query" name="query" rows="10" cols="50"></textarea><br>
+      <button type="submit">Submit</button>
+      <button type="button" onclick="clearResponse()">Clear</button>
+    </form>
+    <br>
+    <label for="response">Response:</label><br>
+    <textarea id="response" name="response" rows="10" cols="50"></textarea>
+    <script>
+      const form = document.querySelector('form');
+      const query = document.querySelector('#query');
+      const response = document.querySelector('#response');
+      
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        fetch('/predict', {
+          method: 'POST',
+          body: JSON.stringify({query: query.value}),
+          headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => response.text())
+        .then(text => response.value = text)
+        .catch(error => console.error(error));
+      });
+      
+      function clearResponse() {
+        fetch('/clear')
+        .then(response => response.text())
+        .then(text => response.value = text)
+        .catch(error => console.error(error));
+      }
+    </script>
+  </body>
+</html>
+

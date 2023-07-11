@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AI心理咨询师</title>
+  </head>
+  <body>
+    <h1>AI心理咨询师</h1>
+    <form onsubmit="submitForm(event)">
+	    <label for="query">{{username}}：</label>
+      <br>
+      <textarea id="query" rows="10" cols="150"></textarea><br><br>
+      <button type="button" onclick="clearHistory()">清空历史</button>
+      <input type="submit" value="提交">
+    </form>
+    <br>
+    <label for="response">回答：</label>
+    <br>
+    <textarea id="response" rows="10" cols="150"></textarea>
+
+    <script>
+      function submitForm(event) {
+        event.preventDefault();
+        const query = document.getElementById("query").value;
+	const username = "{{username}}";
+
+        // 发送POST请求到服务器的/predict接口，将表单数据提交到服务器进行处理
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/predict");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // 将响应结果输出到response文本框里
+            document.getElementById("response").value = xhr.responseText;
+          }
+        };
+        xhr.send(JSON.stringify({ query, username }));
+      }
+
+      function clearHistory() {
+	const username = "{{username}}"
+        const xhr = new XMLHttpRequest();
+	xhr.open("POST", "/clear_history");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // 将响应结果输出到response文本框里
+            document.getElementById("response").value = xhr.responseText;
+          }
+        };
+        xhr.send(JSON.stringify({ username }));
+      }
+    </script>
+  </body>
+</html>
+

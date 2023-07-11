@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>AI心理咨询师</title>
+        <style>
+                .container {
+                        display: flex;
+                        height: 100vh;
+                        align-items: center;
+                        justify-content: center;
+                }
+
+                .left {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        overflow-y: scroll;
+                }
+
+                h1 {
+                        text-align: center;
+                }
+
+                textarea[name="chathistory"] {
+                        width: 80%;
+                        height: 600px;
+                        resize: none;
+                        border: none;
+                        background-color: #f2f2f2;
+                        padding: 10px;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                        text-align: left;
+                        margin-top: 20px;
+                        overflow-y: scroll;
+                }
+
+                .right {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                }
+
+                form {
+                        width: 80%;
+                        max-width: 600px;
+                        padding: 20px;
+                        border-radius: 10px;
+                        background-color: #f2f2f2;
+                        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                }
+
+                label {
+                        display: block;
+                        margin-bottom: 10px;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                }
+
+                textarea[name="response"] {
+                        width: 100%;
+                        height: 200px;
+                        padding: 10px;
+                        margin-bottom: 20px;
+                        border-radius: 5px;
+                        border: none;
+                        background-color: #fff;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                }
+
+                input[type="submit"] {
+                        width: 60%;
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: none;
+                        background-color: #4CAF50;
+                        color: #fff;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                }
+
+        .output {
+            width: 100%;
+            height: 200px;
+            resize: none;
+            border: none;
+            background-color: #f2f2f2;
+            padding: 10px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            margin-top: 20px;
+            overflow-y: scroll;
+        }
+        
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 16px;
+            font-family: Arial, sans-serif;    
+        }
+        
+        button:hover {
+            cursor:pointer;   
+        }
+        
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius
+        }
+
+                textarea[name="query"] {
+                        width: 100%;
+                        height: 200px;
+                        resize: none;
+                        border: none;
+                        background-color: #fff;
+                        padding: 10px;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                        margin-bottom: 20px;
+                        overflow-y: scroll;
+                }
+
+                input[type="submit"] {
+                        background-color: #4CAF50;
+                        color: #fff;
+                }
+
+                #reset-button {
+                        background-color: #f44336;
+                        color: #fff;
+                        margin-left: 10px;
+                }
+
+                input[type="text"][readonly] {
+                        width: 100%;
+                        padding: 10px;
+                        margin-bottom: 20px;
+                        border-radius: 5px;
+                        border: none;
+                        background-color: #f2f2f2;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                }
+        </style>
+</head>
+<body>
+        <div class="container">
+                <div class="left">
+                        <h1>聊天历史</h1>
+			<textarea id="chathistory" name="chathistory" readonly>{{chat_history}}</textarea>
+                </div>
+                <div class="right">
+                        <form onsubmit="submitForm(event)">
+                                <label for="editable-text">zhucanxiang:</label>
+                                <textarea id="query" name="query"></textarea>
+                                <input type="reset" id="reset-button" onclick="clearHistory()" value="清空历史">
+                                <input type="submit" id="submit-button" value="发送">
+                                <br>
+                                <br>
+                                <label for="editable-text">医生说:</label>
+                                <textarea id="response" name="response" readonly></textarea>
+                        </form>
+                </div>
+        </div>
+
+        <script>
+      function submitForm(event) {
+        event.preventDefault();
+        const query = document.getElementById("query").value;
+        const username = "{{username}}";
+
+        // 发送POST请求到服务器的/predict接口，将表单数据提交到服务器进行处理
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/predict");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // 将响应结果输出到response文本框里
+            var data = JSON.parse(xhr.responseText);
+            document.getElementById("response").value = data["response"];
+	    document.getElementById("chathistory").value = data["chat_history"]
+	    var chathistory_textarea =  document.getElementById("chathistory")
+            chathistory_textarea.scrollTop = chathistory_textarea.scrollHeight
+          }
+        };
+        xhr.send(JSON.stringify({ query, username }));
+      }
+
+      function clearHistory() {
+        const username = "{{username}}"
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/clear_history");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // 将响应结果输出到response文本框里
+            var data = JSON.parse(xhr.responseText);
+            document.getElementById("response").value = data["response"];
+	    document.getElementById["chathistory"].value = data["chat_history"]
+          }
+        };
+        xhr.send(JSON.stringify({ username }));
+      }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Webpage</title>
+	<style>
+		.container {
+			display: flex;
+			height: 100vh;
+			align-items: center;
+			justify-content: center;
+		}
+		
+		.left {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		
+		h1 {
+			text-align: center;
+		}
+		
+		textarea {
+			width: 80%;
+			height: 200px;
+			resize: none;
+			border: none;
+			background-color: #f2f2f2;
+			padding: 10px;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+			text-align: center;
+			margin-top: 20px;
+		}
+		
+		.right {
+			flex: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		
+		form {
+			width: 80%;
+			max-width: 600px;
+			padding: 20px;
+			border-radius: 10px;
+			background-color: #f2f2f2;
+			box-shadow: 0 0 10px rgba(0,0,0,0.3);
+		}
+		
+		label {
+			display: block;
+			margin-bottom: 10px;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+		}
+		
+		input[type="text"], select {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 20px;
+			border-radius: 5px;
+			border: none;
+			background-color: #fff;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+		}
+		
+		input[type="submit"] {
+			width: 100%;
+			padding: 10px;
+			border-radius: 5px;
+			border: none;
+			background-color: #4CAF50;
+			color: #fff;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+			cursor: pointer;
+		}
+		
+		input[type="submit"]:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="left">
+			<h1>My Title</h1>
+			<textarea readonly>This is some text that cannot be edited.</textarea>
+		</div>
+		
+		<div class="right">
+			<form>
+				<label for="name">Name:</label>
+				<input type="text" id="name" name="name" required>
+				
+				<label for="email">Email:</label>
+				<input type="text" id="email" name="email" required>
+				
+				<label for="message">Message:</label>
+				<textarea id="message" name="message" required></textarea>
+				
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+
