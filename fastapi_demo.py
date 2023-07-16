@@ -8,8 +8,6 @@ import uvicorn
 import time
 import copy
 
-import gradio as gr
-import mdtex2html
 
 import torch
 import transformers
@@ -26,9 +24,9 @@ from transformers import (
 
 from arguments import ModelArguments, DataTrainingArguments
 
-model_name_or_path = "/root/zhucanxiang/model/chatglm-6b"
+model_name_or_path = "/root/zhucanxiang/model/chatglm2-6b"
 #ptuning_checkpoint = "output/apa-chatglm-6b-pt-128-2e-2/checkpoint-3000"
-ptuning_checkpoint = "output/apa-chatglm-6b-pt-128-2e-2/checkpoint-3000"
+ptuning_checkpoint = "/root/zhucanxiang/ChatGLM2-6B/ptuning/output/apa-chatglm2-6b-pt-128-2e-2/checkpoint-1000"
 pre_seq_len=128
 
 
@@ -170,15 +168,15 @@ def chat(request: PredictData):
             patient_say = ''
             doctor_say = ''
             if 'patient' in chat_history:
-                patient_say = chat_history['patient'].strip()
+                patient_say = "" + chat_history['patient'].strip()
+                histories.append(patient_say)
             if 'doctor' in chat_history:
                 doctor_say = chat_history['doctor'].strip()
-            histories.append('|||'.join([patient_say, doctor_say]))
+                histories.append(doctor_say)
     if len(histories) > 0:
-        history_str = '###'.join(histories)
-    #response, history = predict(request.query, max_length, top_p, temperature, [])
-    prompt_template = "你是一名心理咨询师，现在在给患者做心理咨询。你跟患者的前10轮对话信息如下: {}, 其中`|||`>为一轮中医生和患者说话内容的分割符, `###`为两轮对话间的分割符。 当前轮用户说的内容如下: {}, 根据你跟患者的当前轮对>话的前10轮的对话信息，以及当前轮用户说的内容对患者进行回答。"
-    prompt = prompt_template.format(history_str, request.query)
+        history_str = '\n'.join(histories)
+    prompt_template = "假设你是一名心理咨询师，你来帮助来访者解决心理问题。来访者说: ###{}###。 来访者说的内容被左右分别一个###符号包围。请你对来访者做出回应，回应要体现对来访者的关切和对来访者有启发。以下是对话的上文信息供参考>。对话的上文信息格式如下：```{}```。上下文信息被```被左右分别一个```符号包围，上下文信息中的心理咨询师和来访者说的内容被左右分别一个###包围。"
+    prompt = prompt_template.format(request.query, history_str)
     response, history = predict(prompt, max_length, top_p, temperature, [])
     chat_history_str = write_chat_history(request.username, request.query, response)
     print('prompt:' + prompt)
