@@ -1,0 +1,109 @@
+loading model
+Loading prefix_encoder weight from output/apa-chatglm2-6b-pt-128-2e-2/checkpoint-4000
+Loading checkpoint shards:   0%|          | 0/7 [00:00<?, ?it/s]Loading checkpoint shards:  14%|█▍        | 1/7 [00:10<01:01, 10.22s/it]Loading checkpoint shards:  29%|██▊       | 2/7 [00:21<00:55, 11.08s/it]Loading checkpoint shards:  43%|████▎     | 3/7 [00:32<00:44, 11.06s/it]Loading checkpoint shards:  57%|█████▋    | 4/7 [00:43<00:32, 10.86s/it]Loading checkpoint shards:  71%|███████▏  | 5/7 [00:55<00:22, 11.19s/it]Loading checkpoint shards:  86%|████████▌ | 6/7 [01:06<00:11, 11.09s/it]Loading checkpoint shards: 100%|██████████| 7/7 [01:12<00:00,  9.39s/it]Loading checkpoint shards: 100%|██████████| 7/7 [01:12<00:00, 10.29s/it]
+Some weights of ChatGLMForConditionalGeneration were not initialized from the model checkpoint at /root/zhucanxiang/model/chatglm2-6b and are newly initialized: ['transformer.prefix_encoder.embedding.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+╭───────────────────── Traceback (most recent call last) ──────────────────────╮
+│ /root/zhucanxiang/ChatGLM2-6B/ptuning/fastapi_demo.py:85 in <module>         │
+│                                                                              │
+│    82 │   print('finish load model. load model time cost: {}'.format(time.ti │
+│    83                                                                        │
+│    84                                                                        │
+│ ❱  85 load_model(model_name_or_path, ptuning_checkpoint, pre_seq_len)        │
+│    86                                                                        │
+│    87 def write_chat_history(username, patient_say, doctor_say):             │
+│    88 │   filename = history_dir + username + '.txt'                         │
+│                                                                              │
+│ /root/zhucanxiang/ChatGLM2-6B/ptuning/fastapi_demo.py:66 in load_model       │
+│                                                                              │
+│    63 │                                                                      │
+│    64 │   print(f"Loading prefix_encoder weight from {model_args.ptuning_che │
+│    65 │   model = AutoModel.from_pretrained(model_name_or_path, config=confi │
+│ ❱  66 │   prefix_state_dict = torch.load(os.path.join(ptuning_checkpoint, "p │
+│    67 │   new_prefix_state_dict = {}                                         │
+│    68 │   for k, v in prefix_state_dict.items():                             │
+│    69 │   │   if k.startswith("transformer.prefix_encoder."):                │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:809 in load                                                             │
+│                                                                              │
+│    806 │   │   │   │   │   │   return _load(opened_zipfile, map_location, _w │
+│    807 │   │   │   │   │   except RuntimeError as e:                         │
+│    808 │   │   │   │   │   │   raise pickle.UnpicklingError(UNSAFE_MESSAGE + │
+│ ❱  809 │   │   │   │   return _load(opened_zipfile, map_location, pickle_mod │
+│    810 │   │   if weights_only:                                              │
+│    811 │   │   │   try:                                                      │
+│    812 │   │   │   │   return _legacy_load(opened_file, map_location, _weigh │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:1172 in _load                                                           │
+│                                                                              │
+│   1169 │                                                                     │
+│   1170 │   unpickler = UnpicklerWrapper(data_file, **pickle_load_args)       │
+│   1171 │   unpickler.persistent_load = persistent_load                       │
+│ ❱ 1172 │   result = unpickler.load()                                         │
+│   1173 │                                                                     │
+│   1174 │   torch._utils._validate_loaded_sparse_tensors()                    │
+│   1175                                                                       │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:1142 in persistent_load                                                 │
+│                                                                              │
+│   1139 │   │   │   typed_storage = loaded_storages[key]                      │
+│   1140 │   │   else:                                                         │
+│   1141 │   │   │   nbytes = numel * torch._utils._element_size(dtype)        │
+│ ❱ 1142 │   │   │   typed_storage = load_tensor(dtype, nbytes, key, _maybe_de │
+│   1143 │   │                                                                 │
+│   1144 │   │   return typed_storage                                          │
+│   1145                                                                       │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:1116 in load_tensor                                                     │
+│                                                                              │
+│   1113 │   │   # TODO: Once we decide to break serialization FC, we can      │
+│   1114 │   │   # stop wrapping with TypedStorage                             │
+│   1115 │   │   typed_storage = torch.storage.TypedStorage(                   │
+│ ❱ 1116 │   │   │   wrap_storage=restore_location(storage, location),         │
+│   1117 │   │   │   dtype=dtype,                                              │
+│   1118 │   │   │   _internal=True)                                           │
+│   1119                                                                       │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:217 in default_restore_location                                         │
+│                                                                              │
+│    214                                                                       │
+│    215 def default_restore_location(storage, location):                      │
+│    216 │   for _, _, fn in _package_registry:                                │
+│ ❱  217 │   │   result = fn(storage, location)                                │
+│    218 │   │   if result is not None:                                        │
+│    219 │   │   │   return result                                             │
+│    220 │   raise RuntimeError("don't know how to restore data location of "  │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/serializatio │
+│ n.py:187 in _cuda_deserialize                                                │
+│                                                                              │
+│    184 │   │   │   with torch.cuda.device(device):                           │
+│    185 │   │   │   │   return torch.UntypedStorage(obj.nbytes(), device=torc │
+│    186 │   │   else:                                                         │
+│ ❱  187 │   │   │   return obj.cuda(device)                                   │
+│    188                                                                       │
+│    189                                                                       │
+│    190 def _mps_deserialize(obj, location):                                  │
+│                                                                              │
+│ /root/miniconda3/envs/chatglm/lib/python3.9/site-packages/torch/_utils.py:81 │
+│ in _cuda                                                                     │
+│                                                                              │
+│    78 │   │   │   values = torch.Tensor._values(self).cuda(device, non_block │
+│    79 │   │   │   return new_type(indices, values, self.size())              │
+│    80 │   │   else:                                                          │
+│ ❱  81 │   │   │   untyped_storage = torch.UntypedStorage(                    │
+│    82 │   │   │   │   self.size(), device=torch.device("cuda")               │
+│    83 │   │   │   )                                                          │
+│    84 │   │   │   untyped_storage.copy_(self, non_blocking)                  │
+╰──────────────────────────────────────────────────────────────────────────────╯
+RuntimeError: CUDA error: out of memory
+CUDA kernel errors might be asynchronously reported at some other API call, so 
+the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

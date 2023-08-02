@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AI咨询师</title>
+  </head>
+  <body>
+    <h1>AI咨询师</h1>
+    <form onsubmit="submitForm(event)">
+      <label for="input">输入：</label>
+      <input type="text" id="input" name="input" maxlength="300"><br><br>
+      <label for="max_length">max_length：</label>
+      <input type="number" id="max_length" name="max_length"><br><br>
+      <label for="top_p">top_p：</label>
+      <input type="number" id="top_p" name="top_p"><br><br>
+      <label for="temperature">temperature：</label>
+      <input type="number" id="temperature" name="temperature"><br><br>
+      <input type="submit" value="提交">
+    </form>
+    <br>
+    <label for="response">响应结果：</label>
+    <textarea id="response" rows="10" cols="50"></textarea>
+
+    <script>
+      function submitForm(event) {
+        event.preventDefault();
+        const input = document.getElementById("input").value;
+        const max_length = document.getElementById("max_length").value;
+        const top_p = document.getElementById("top_p").value;
+        const temperature = document.getElementById("temperature").value;
+
+        // 发送POST请求到服务器的/predict接口，将表单数据提交到服务器进行处理
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/predict");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            // 将响应结果输出到response文本框里
+            document.getElementById("response").value = xhr.responseText;
+          }
+        };
+        xhr.send(JSON.stringify({ input, max_length, top_p, temperature }));
+      }
+    </script>
+  </body>
+</html>
+

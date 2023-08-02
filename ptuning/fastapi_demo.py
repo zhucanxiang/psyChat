@@ -26,7 +26,7 @@ from arguments import ModelArguments, DataTrainingArguments
 
 model_name_or_path = "/root/zhucanxiang/model/chatglm2-6b"
 #ptuning_checkpoint = "output/apa-chatglm-6b-pt-128-2e-2/checkpoint-3000"
-ptuning_checkpoint = "/root/zhucanxiang/ChatGLM2-6B/ptuning/output/apa-chatglm2-6b-pt-128-2e-2/checkpoint-1000"
+ptuning_checkpoint = "/root/zhucanxiang/ChatGLM2-6B/ptuning/output/apa-chatglm2-6b-pt-128-2e-2/checkpoint-4000"
 pre_seq_len=128
 
 
@@ -168,10 +168,10 @@ def chat(request: PredictData):
             patient_say = ''
             doctor_say = ''
             if 'patient' in chat_history:
-                patient_say = "" + chat_history['patient'].strip()
+                patient_say = "来访者说:###" + chat_history['patient'].strip() + "###"
                 histories.append(patient_say)
             if 'doctor' in chat_history:
-                doctor_say = chat_history['doctor'].strip()
+                doctor_say = "心理咨询师说:###" + chat_history['doctor'].strip() + "###"
                 histories.append(doctor_say)
     if len(histories) > 0:
         history_str = '\n'.join(histories)
